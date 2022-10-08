@@ -1,1 +1,8 @@
-<h1>this is index</h1>
+<ul>
+  {{!-- 使用each把每個todos拿出迭代 --}}
+  {{#each todos}}
+  <li>
+    {{this.name}}
+  </li>
+  {{/each}}
+</ul>

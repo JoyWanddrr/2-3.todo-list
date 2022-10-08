@@ -3,6 +3,8 @@ const app = express()
 // 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
+// 載入todo
+const Todo = require('./models/todo')
 // 設定連線到 mongoDB。mongoose.connect 是 Mongoose 提供的方法，當程式執行到這一行指令時，就會與資料庫連線。在這裡我們需要告知程式要去哪些尋找資料庫，因此需要傳入連線字串。
 //process.env，是指 Node.js 環境變數(當我們想要隱藏一些敏感資訊時，我們會藉由設定環境變數的方式，來將指定資訊傳入程式碼)的界面。故這一串程式碼的意思是，使用 mongoose.connect 去連線 process.env 眾多環境變數之中的 MONGODB_URI 這項環境變數的資訊。
 // 處理 DeprecationWarning 警告連線 MongoDB 時傳入 { useNewUrlParser: true } 、{ useUnifiedTopology: true } 的設定
@@ -40,7 +42,14 @@ app.set('view engine', 'hbs')
 
 
 app.get('/', (req, res) => {
-  res.render('index')
+  // 使用find，在未寫入條件之下，會取出全部的資料
+  Todo.find()
+    // 把mongoose的model轉成JS
+    .lean()
+    // find取出的物件為todos。{todos}則為{todos:todos}的縮寫
+    .then(todos => res.render('index', { todos }))
+    // 抓取錯誤資訊
+    .catch(error => console.error(error))
 })
 
 app.listen(3000, () => {
