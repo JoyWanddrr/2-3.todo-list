@@ -1,5 +1,7 @@
 {{!-- todo的detail --}}
 {{!-- 只需要文字，不需要html，所以{}X2 --}}
 <p>{{todo.name}}</p>
+{{!-- 設定編輯入口 --}}
+<a href="/todos/{{todo._id}}/edit">edit</a>
 {{!-- 導回根目錄 --}}
 <a href="/">back</a>

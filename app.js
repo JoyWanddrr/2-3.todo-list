@@ -87,12 +87,43 @@ app.post('/todos', (req, res) => {
 
 // detail路由。:id，其id為字定義參數
 app.get('/todos/:id', (req, res) => {
+  // id為動態參數，使用params取得
   const id = req.params.id
   return Todo.findById(id)
-    // 撇除Mongoose的處理
+    // 撇除Mongoose的處理，才能render
     .lean()
     // 將拿到的資料放入detail.hbs渲染
     .then(todo => res.render('detail', { todo }))
+    .catch(error => console.log(error))
+})
+
+// 設定edit路由。會與detail很像，都是取出單筆資料
+app.get('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id)
+    .lean()
+    .then(todo => res.render('edit', { todo }))
+    .catch(error => console.log(error))
+})
+
+// 設定edit的post路由。
+app.post('/todos/:id/edit', (req, res) => {
+  const id = req.params.id
+  // 使用者修改的name
+  const name = req.body.name
+  // 1.查詢資料
+  return Todo.findById(id)
+    // 2.如果查詢成功，修改後重新儲存資料
+    // 這裡需要Mongoose的function，所以不用Lean()移除格式
+    .then(todo => {
+      // 修改資料
+      todo.name = name
+      // save 為Mongoose的function，上傳資料庫
+      // 非同步事件均用return回傳
+      return todo.save()
+    })
+    // 3.如果儲存成功，導向其他頁面
+    .then(() => res.redirect(`/todos/${id}`))
     .catch(error => console.log(error))
 })
 
