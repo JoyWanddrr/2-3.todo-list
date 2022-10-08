@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 // 載入todo
 const Todo = require('./models/todo')
+const bodyParser = require('body-parser')
 // 設定連線到 mongoDB。mongoose.connect 是 Mongoose 提供的方法，當程式執行到這一行指令時，就會與資料庫連線。在這裡我們需要告知程式要去哪些尋找資料庫，因此需要傳入連線字串。
 //process.env，是指 Node.js 環境變數(當我們想要隱藏一些敏感資訊時，我們會藉由設定環境變數的方式，來將指定資訊傳入程式碼)的界面。故這一串程式碼的意思是，使用 mongoose.connect 去連線 process.env 眾多環境變數之中的 MONGODB_URI 這項環境變數的資訊。
 // 處理 DeprecationWarning 警告連線 MongoDB 時傳入 { useNewUrlParser: true } 、{ useUnifiedTopology: true } 的設定
@@ -39,6 +40,9 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 // 啟動樣板引擎hbs
 app.set('view engine', 'hbs')
 
+// use:每筆request，通過body parser解析
+// urlencoded:使用bodyParser解析url
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 app.get('/', (req, res) => {
@@ -50,6 +54,35 @@ app.get('/', (req, res) => {
     .then(todos => res.render('index', { todos }))
     // 抓取錯誤資訊
     .catch(error => console.error(error))
+})
+
+// 使用者可以新增資料路由
+app.get('/todos/new', (req, res) => {
+  return res.render('new')
+})
+
+// // 寫法一
+// // new.hbs執行method(POST)的路由
+// app.post('/todos', (req, res) => {
+//   // 將使用者傳送的東西擷取下來
+//   const name = req.body.name
+//   // 建立新todo實例，僅存在於伺服器端
+//   const todo = new Todo({ name })
+//   // todo實例存進資料庫
+//   return todo.save()
+//     // then傳給前端樣板，並導回首頁
+//     .then(() => res.redirect('/'))
+//     .catch(error => console.log(error))
+// })
+
+// 寫法二，設定新的路由來接住表單資料。
+app.post('/todos', (req, res) => {
+  // 不要忘記載入body Parser
+  const name = req.body.name
+  // 使用create:直接命令mongoose建立(直接建立存進資料庫)
+  return Todo.create({ name })
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
 })
 
 app.listen(3000, () => {
