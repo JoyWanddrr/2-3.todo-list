@@ -85,6 +85,17 @@ app.post('/todos', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// detail路由。:id，其id為字定義參數
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id)
+    // 撇除Mongoose的處理
+    .lean()
+    // 將拿到的資料放入detail.hbs渲染
+    .then(todo => res.render('detail', { todo }))
+    .catch(error => console.log(error))
+})
+
 app.listen(3000, () => {
   console.log('now is running port 3000!')
 })
