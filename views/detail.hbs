@@ -5,3 +5,6 @@
 <a href="/todos/{{todo._id}}/edit">edit</a>
 {{!-- 導回根目錄 --}}
 <a href="/">back</a>
+{{!-- 設定刪除入口--}}
+<form action="/todos/{{todo._id}}/delete" method="POST" style="display:inline;">
+  <button type="submit">delete</button>

@@ -127,6 +127,19 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// delete的POST
+app.post('/todos/:id/delete', (req, res) => {
+  const id = req.params.id
+  // 為什麼要先findById，確保此id在資料庫裡是存在的
+  return Todo.findById(id)
+    // 找到的話就then()，在資料庫裡刪除
+    .then(todo => todo.remove())
+    // 刪除之後，把使用者丟回根目錄
+    .then(() => res.redirect('/'))
+    .catch(error => console.log(error))
+
+})
+
 app.listen(3000, () => {
   console.log('now is running port 3000!')
 })

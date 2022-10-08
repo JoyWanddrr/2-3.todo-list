@@ -9,6 +9,10 @@
     <a href="./todos/{{this._id}}">detail</a>
     {{!-- 設定編輯入口 --}}
     <a href="./todos/{{this._id}}/edit">edit</a>
+    {{!-- 設定刪除入口。新增form，因為要用post --}}
+    <form action="./todos/{{this._id}}/delete" method="POST" style="display:inline;">
+      <button type="submit">delete</button>
+    </form>
   </li>
   {{/each}}
 </ul>
