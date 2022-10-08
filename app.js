@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 // 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。
 const mongoose = require('mongoose')
-
+const exphbs = require('express-handlebars')
 // 設定連線到 mongoDB。mongoose.connect 是 Mongoose 提供的方法，當程式執行到這一行指令時，就會與資料庫連線。在這裡我們需要告知程式要去哪些尋找資料庫，因此需要傳入連線字串。
 //process.env，是指 Node.js 環境變數(當我們想要隱藏一些敏感資訊時，我們會藉由設定環境變數的方式，來將指定資訊傳入程式碼)的界面。故這一串程式碼的意思是，使用 mongoose.connect 去連線 process.env 眾多環境變數之中的 MONGODB_URI 這項環境變數的資訊。
 // 處理 DeprecationWarning 警告連線 MongoDB 時傳入 { useNewUrlParser: true } 、{ useUnifiedTopology: true } 的設定
@@ -31,11 +31,16 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// 設定載入的engine
+//建立一個名叫hbs的樣板引擎，並傳入exphbs與相關參數(extname: '.hbs'，是指定副檔名為.hbs預設的長檔名改寫成短檔名)。
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
+// 啟動樣板引擎hbs
+app.set('view engine', 'hbs')
 
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.render('index')
 })
 
 app.listen(3000, () => {
