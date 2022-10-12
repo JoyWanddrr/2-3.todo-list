@@ -1,15 +1,15 @@
 const express = require('express')
 const app = express()
-// 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。
-const mongoose = require('mongoose')
+// 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。將mongoose分開管理。
+// const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
-// 載入todo
-const Todo = require('./models/todo')
+// 載入todo，router設定完之後就用不到了
+// const Todo = require('./models/todo')
 const bodyParser = require('body-parser')
 // 設定連線到 mongoDB。mongoose.connect 是 Mongoose 提供的方法，當程式執行到這一行指令時，就會與資料庫連線。在這裡我們需要告知程式要去哪些尋找資料庫，因此需要傳入連線字串。
 //process.env，是指 Node.js 環境變數(當我們想要隱藏一些敏感資訊時，我們會藉由設定環境變數的方式，來將指定資訊傳入程式碼)的界面。故這一串程式碼的意思是，使用 mongoose.connect 去連線 process.env 眾多環境變數之中的 MONGODB_URI 這項環境變數的資訊。
 // 處理 DeprecationWarning 警告連線 MongoDB 時傳入 { useNewUrlParser: true } 、{ useUnifiedTopology: true } 的設定
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // 環境變數的設定
 // 請你打開終端機，使用以下指令來新增 mongoose.connect 中，要連線的 MONGO_URI 這項環境變數，讓伺服器知道要連線字串，好連線至指定的資料庫。
@@ -23,17 +23,19 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 // echo "export MONGODB_URI=mongodb+srv://alpha:camp@cluster0.fovij.mongodb.net/todo-list?retryWrites=true&w=majority" >> ~/.bash_profile
 // 同樣的概念，如果未來你要暫時性，或是永久性的新增、改變某些環境變數的資料，可以使用本單元教的方法來做設定。
 
-// 取得資料庫連線狀態
-const db = mongoose.connection
-// 連線異常。在這裡用 on 註冊error 監聽事件有沒有發生，語法的意思是「只要有觸發 error 就印出 error 訊息」。
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-// 連線成功。註冊open事件監聽器，相對於「錯誤」，連線成功只會發生一次，所以使用 once(監聽器是一次性的)一旦連線成功，在執行 callback 以後就會解除監聽器。
-db.once('open', () => {
-  console.log('mongodb connected!')
-})
+// // 取得資料庫連線狀態，放入mogoose.js
+// const db = mongoose.connection
+// // 連線異常。在這裡用 on 註冊error 監聽事件有沒有發生，語法的意思是「只要有觸發 error 就印出 error 訊息」。
+// db.on('error', () => {
+//   console.log('mongodb error!')
+// })
+// // 連線成功。註冊open事件監聽器，相對於「錯誤」，連線成功只會發生一次，所以使用 once(監聽器是一次性的)一旦連線成功，在執行 callback 以後就會解除監聽器。
+// db.once('open', () => {
+//   console.log('mongodb connected!')
+// })
 
+// 載入mongoose.js，不需要設定對象接住。在這裡載入，app.js執行時會一起跑。
+require('./config/mongoose')
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
 // 將 request 導入路由器
@@ -70,10 +72,10 @@ app.use(routes)
 //     .catch(error => console.error(error))
 // })
 
-// 使用者可以新增資料路由
-app.get('/todos/new', (req, res) => {
-  return res.render('new')
-})
+// // 使用者可以新增資料路由
+// app.get('/todos/new', (req, res) => {
+//   return res.render('new')
+// })
 
 // // 寫法一
 // // new.hbs執行method(POST)的路由
@@ -90,77 +92,77 @@ app.get('/todos/new', (req, res) => {
 // })
 
 // 寫法二，設定新的路由來接住表單資料。
-app.post('/todos', (req, res) => {
-  // 不要忘記載入body Parser
-  const name = req.body.name
-  // 使用create:直接命令mongoose建立(直接建立存進資料庫)
-  return Todo.create({ name })
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
+// app.post('/todos', (req, res) => {
+//   // 不要忘記載入body Parser
+//   const name = req.body.name
+//   // 使用create:直接命令mongoose建立(直接建立存進資料庫)
+//   return Todo.create({ name })
+//     .then(() => res.redirect('/'))
+//     .catch(error => console.log(error))
+// })
 
-// detail路由。:id，其id為字定義參數
-app.get('/todos/:id', (req, res) => {
-  // id為動態參數，使用params取得
-  const id = req.params.id
-  return Todo.findById(id)
-    // 撇除Mongoose的處理，才能render
-    .lean()
-    // 將拿到的資料放入detail.hbs渲染
-    .then(todo => res.render('detail', { todo }))
-    .catch(error => console.log(error))
-})
+// // detail路由。:id，其id為字定義參數
+// app.get('/todos/:id', (req, res) => {
+//   // id為動態參數，使用params取得
+//   const id = req.params.id
+//   return Todo.findById(id)
+//     // 撇除Mongoose的處理，才能render
+//     .lean()
+//     // 將拿到的資料放入detail.hbs渲染
+//     .then(todo => res.render('detail', { todo }))
+//     .catch(error => console.log(error))
+// })
 
-// 設定edit路由。會與detail很像，都是取出單筆資料
-app.get('/todos/:id/edit', (req, res) => {
-  const id = req.params.id
-  return Todo.findById(id)
-    .lean()
-    .then(todo => res.render('edit', { todo }))
-    .catch(error => console.log(error))
-})
+// // 設定edit路由。會與detail很像，都是取出單筆資料
+// app.get('/todos/:id/edit', (req, res) => {
+//   const id = req.params.id
+//   return Todo.findById(id)
+//     .lean()
+//     .then(todo => res.render('edit', { todo }))
+//     .catch(error => console.log(error))
+// })
 
-// 設定edit的post路由。更改成為PUT(method)，所以路由就不需要edit了。
-app.put('/todos/:id', (req, res) => {
-  const id = req.params.id
-  // 使用解構賦值 --->使用者修改的name，const name = req.body.name。新增checked，const isDone = req.body.isDone。
-  const { name, isDone } = req.body
+// // 設定edit的post路由。更改成為PUT(method)，所以路由就不需要edit了。
+// app.put('/todos/:id', (req, res) => {
+//   const id = req.params.id
+//   // 使用解構賦值 --->使用者修改的name，const name = req.body.name。新增checked，const isDone = req.body.isDone。
+//   const { name, isDone } = req.body
 
-  // 1.查詢資料
-  return Todo.findById(id)
-    // 2.如果查詢成功，修改後重新儲存資料
-    // 這裡需要Mongoose的function，所以不用Lean()移除格式
-    .then(todo => {
-      // 修改資料
-      todo.name = name
-      // // 判定isDone的狀態，可縮寫成下面那句
-      // if (isDone === 'on') {
-      //   todo.isDone = true
-      // } else (
-      //   todo.isDone = false
-      // )
-      todo.isDone = isDone === 'on'
-      // save 為Mongoose的function，上傳資料庫
-      // 非同步事件均用return回傳
-      return todo.save()
-    })
-    // 3.如果儲存成功，導向其他頁面
-    .then(() => res.redirect(`/todos/${id}`))
-    .catch(error => console.log(error))
-})
+//   // 1.查詢資料
+//   return Todo.findById(id)
+//     // 2.如果查詢成功，修改後重新儲存資料
+//     // 這裡需要Mongoose的function，所以不用Lean()移除格式
+//     .then(todo => {
+//       // 修改資料
+//       todo.name = name
+//       // // 判定isDone的狀態，可縮寫成下面那句
+//       // if (isDone === 'on') {
+//       //   todo.isDone = true
+//       // } else (
+//       //   todo.isDone = false
+//       // )
+//       todo.isDone = isDone === 'on'
+//       // save 為Mongoose的function，上傳資料庫
+//       // 非同步事件均用return回傳
+//       return todo.save()
+//     })
+//     // 3.如果儲存成功，導向其他頁面
+//     .then(() => res.redirect(`/todos/${id}`))
+//     .catch(error => console.log(error))
+// })
 
-// delete的POST。更改method為delete，一樣路由後面就不需要delete了
-app.delete('/todos/:id', (req, res) => {
-  const id = req.params.id
-  // 為什麼要先findById，確保此id在資料庫裡是存在的
-  return Todo.findById(id)
-    // 找到的話就then()，在資料庫裡刪除
-    .then(todo => todo.remove())
-    // 刪除之後，把使用者丟回根目錄
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
+// // delete的POST。更改method為delete，一樣路由後面就不需要delete了
+// app.delete('/todos/:id', (req, res) => {
+//   const id = req.params.id
+//   // 為什麼要先findById，確保此id在資料庫裡是存在的
+//   return Todo.findById(id)
+//     // 找到的話就then()，在資料庫裡刪除
+//     .then(todo => todo.remove())
+//     // 刪除之後，把使用者丟回根目錄
+//     .then(() => res.redirect('/'))
+//     .catch(error => console.log(error))
 
-})
+// })
 
 app.listen(3000, () => {
   console.log('now is running port 3000!')
