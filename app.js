@@ -109,8 +109,9 @@ app.get('/todos/:id/edit', (req, res) => {
 // 設定edit的post路由。
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id
-  // 使用者修改的name
-  const name = req.body.name
+  // 使用解構賦值 --->使用者修改的name，const name = req.body.name。新增checked，const isDone = req.body.isDone。
+  const { name, isDone } = req.body
+
   // 1.查詢資料
   return Todo.findById(id)
     // 2.如果查詢成功，修改後重新儲存資料
@@ -118,6 +119,13 @@ app.post('/todos/:id/edit', (req, res) => {
     .then(todo => {
       // 修改資料
       todo.name = name
+      // // 判定isDone的狀態，可縮寫成下面那句
+      // if (isDone === 'on') {
+      //   todo.isDone = true
+      // } else (
+      //   todo.isDone = false
+      // )
+      todo.isDone = isDone === 'on'
       // save 為Mongoose的function，上傳資料庫
       // 非同步事件均用return回傳
       return todo.save()

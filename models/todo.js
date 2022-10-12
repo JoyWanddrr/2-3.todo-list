@@ -13,8 +13,11 @@ const todoSchema = new Schema({
     type: String, // 資料型別是字串
     required: true // required的值為true，表示必填欄位
   },
-  done: {
-    type: Boolean
+  // 新增是否完成的數值
+  isDone: {
+    type: Boolean,
+    // 預設完成狀態為 false
+    default: false,
   }
 })
 

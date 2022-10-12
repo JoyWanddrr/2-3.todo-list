@@ -1,7 +1,6 @@
 {
   "name": "2-3.todo-list",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -17,5 +16,15 @@
     "express": "^4.17.1",
     "express-handlebars": "^4.0.2",
     "mongoose": "^5.9.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoyWanddrr/2-3.todo-list.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JoyWanddrr/2-3.todo-list/issues"
+  },
+  "homepage": "https://github.com/JoyWanddrr/2-3.todo-list#readme",
+  "description": ""
 }

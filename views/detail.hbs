@@ -1,4 +1,7 @@
 {{!-- todo的detail --}}
+
+{{!-- disable表示狀態不可更改 --}}
+<input type="checkbox" name="isDone" {{#if todo.isDone}} checked {{/if}} disabled>
 {{!-- 只需要文字，不需要html，所以{}X2 --}}
 <p>{{todo.name}}</p>
 {{!-- 設定編輯入口 --}}

@@ -4,6 +4,7 @@
   {{!-- 使用each把每個todos拿出迭代 --}}
   {{#each todos}}
   <li>
+    <input type="checkbox" name="isDone" {{#if this.isDone}} checked {{/if}} disabled>
     {{this.name}}
     {{!-- {{this._id}}:_id未在model中被定義，但若在robo 3T(資料庫)裡可以看見。在Mongoose裡使用_id來表示每筆資料的唯一識別碼。 --}}
     <a href="./todos/{{this._id}}">detail</a>
