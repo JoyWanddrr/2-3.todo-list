@@ -50,6 +50,8 @@ app.get('/', (req, res) => {
   Todo.find()
     // 把mongoose的model轉成JS
     .lean()
+    // 將資料排序
+    .sort({ name: 'asc' })
     // find取出的物件為todos。{todos}則為{todos:todos}的縮寫
     .then(todos => res.render('index', { todos }))
     // 抓取錯誤資訊
