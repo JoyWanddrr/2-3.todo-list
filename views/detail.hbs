@@ -9,5 +9,6 @@
 {{!-- 導回根目錄 --}}
 <a href="/">back</a>
 {{!-- 設定刪除入口--}}
-<form action="/todos/{{todo._id}}/delete" method="POST" style="display:inline;">
+{{!-- 載入method-override後，用戶端回傳的post可以經由override轉成delete method。post就會改成delete。開啟瀏覽器F12的開發者工具，network裡可以看見是否經過新設定的路由 --}}
+<form action="/todos/{{todo._id}}?_method=DELETE" method="POST" style="display:inline;">
   <button type="submit">delete</button>

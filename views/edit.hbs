@@ -1,5 +1,5 @@
 {{!-- edit的method="POST"，要新增路由以接住資料 --}}
-<form action="/todos/{{todo._id}}/edit" method="POST">
+<form action="/todos/{{todo._id}}?_method=PUT" method="POST">
   {{!-- 新增checkbox ，if todo.isDone--->表示true，則checked(勾選)--}}
   <input type="checkbox" name="isDone" {{#if todo.isDone}} checked {{/if}}>
   <input type="text" placeholder="name" name="name" value="{{todo.name}}">

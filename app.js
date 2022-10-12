@@ -34,6 +34,12 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// 載入method-override，以覆寫http的method
+// 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
+const methodOverride = require('method-override')
+// 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉：。
+app.use(methodOverride('_method'))
+
 // 設定載入的engine
 //建立一個名叫hbs的樣板引擎，並傳入exphbs與相關參數(extname: '.hbs'，是指定副檔名為.hbs預設的長檔名改寫成短檔名)。
 app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
@@ -50,8 +56,8 @@ app.get('/', (req, res) => {
   Todo.find()
     // 把mongoose的model轉成JS
     .lean()
-    // 將資料排序
-    .sort({ name: 'asc' })
+    // 將資料排序，前面指定用甚麼排列，後面放排列的方式。asc:正敘，desc倒敘。此排列會再db裡執行。
+    .sort({ _id: 'asc' })
     // find取出的物件為todos。{todos}則為{todos:todos}的縮寫
     .then(todos => res.render('index', { todos }))
     // 抓取錯誤資訊
@@ -108,8 +114,8 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// 設定edit的post路由。
-app.post('/todos/:id/edit', (req, res) => {
+// 設定edit的post路由。更改成為PUT(method)，所以路由就不需要edit了。
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   // 使用解構賦值 --->使用者修改的name，const name = req.body.name。新增checked，const isDone = req.body.isDone。
   const { name, isDone } = req.body
@@ -137,8 +143,8 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// delete的POST
-app.post('/todos/:id/delete', (req, res) => {
+// delete的POST。更改method為delete，一樣路由後面就不需要delete了
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   // 為什麼要先findById，確保此id在資料庫裡是存在的
   return Todo.findById(id)
