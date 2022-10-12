@@ -34,10 +34,15 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
+const routes = require('./routes')
+// 將 request 導入路由器
+app.use(routes)
+
 // 載入method-override，以覆寫http的method
 // 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
 const methodOverride = require('method-override')
-// 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉：。
+// 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉。
 app.use(methodOverride('_method'))
 
 // 設定載入的engine
@@ -50,19 +55,20 @@ app.set('view engine', 'hbs')
 // urlencoded:使用bodyParser解析url
 app.use(bodyParser.urlencoded({ extended: true }))
 
-
-app.get('/', (req, res) => {
-  // 使用find，在未寫入條件之下，會取出全部的資料
-  Todo.find()
-    // 把mongoose的model轉成JS
-    .lean()
-    // 將資料排序，前面指定用甚麼排列，後面放排列的方式。asc:正敘，desc倒敘。此排列會再db裡執行。
-    .sort({ _id: 'asc' })
-    // find取出的物件為todos。{todos}則為{todos:todos}的縮寫
-    .then(todos => res.render('index', { todos }))
-    // 抓取錯誤資訊
-    .catch(error => console.error(error))
-})
+// 使用總路由匯出。定義到home之下，再到index彙整，再回到app.js使用。
+app.use(routes)
+// app.get('/', (req, res) => {
+//   // 使用find，在未寫入條件之下，會取出全部的資料
+//   Todo.find()
+//     // 把mongoose的model轉成JS
+//     .lean()
+//     // 將資料排序，前面指定用甚麼排列，後面放排列的方式。asc:正敘，desc倒敘。此排列會再db裡執行。
+//     .sort({ _id: 'asc' })
+//     // find取出的物件為todos。{todos}則為{todos:todos}的縮寫
+//     .then(todos => res.render('index', { todos }))
+//     // 抓取錯誤資訊
+//     .catch(error => console.error(error))
+// })
 
 // 使用者可以新增資料路由
 app.get('/todos/new', (req, res) => {
