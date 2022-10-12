@@ -12,5 +12,6 @@ router.get('/', (req, res) => {
     .catch(error => console.error(error))
 })
 
+
 // 匯出路由器，這裡的router是const router嗎。這裡的router會先進入home，再由home彙整出去。
 module.exports = router

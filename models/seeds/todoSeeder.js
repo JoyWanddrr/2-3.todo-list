@@ -1,4 +1,4 @@
-// //建立種子資料
+// // 建立種子資料
 
 // // 一樣使用到mongoDB，且因為會上傳到資料庫，所以還需資料庫連線
 // const mongoose = require('mongoose')
@@ -25,7 +25,7 @@
 //   console.log('done')
 // })
 
-// 使用mongoose.js載入設定
+// 重構mongoose
 
 const Todo = require('../todo')
 const db = require('../../config/mongoose')

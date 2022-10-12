@@ -34,16 +34,18 @@ const bodyParser = require('body-parser')
 //   console.log('mongodb connected!')
 // })
 
-// 載入mongoose.js，不需要設定對象接住。在這裡載入，app.js執行時會一起跑。
-require('./config/mongoose')
+
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
 // 將 request 導入路由器
-app.use(routes)
+// 載入mongoose.js，不需要設定對象接住。在這裡載入，app.js執行時會一起跑。
+require('./config/mongoose')
 
 // 載入method-override，以覆寫http的method
 // 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
 const methodOverride = require('method-override')
+
+app.use(routes)
 // 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉。
 app.use(methodOverride('_method'))
 
@@ -56,7 +58,6 @@ app.set('view engine', 'hbs')
 // use:每筆request，通過body parser解析
 // urlencoded:使用bodyParser解析url
 app.use(bodyParser.urlencoded({ extended: true }))
-
 // 使用總路由匯出。定義到home之下，再到index彙整，再回到app.js使用。
 app.use(routes)
 // app.get('/', (req, res) => {
