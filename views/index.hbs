@@ -1,19 +1,26 @@
 {{!-- 點擊create會進到new.hbs --}}
 <a href="./todos/new">Create</a>
-<ul>
+<ul class="list-group">
   {{!-- 使用each把每個todos拿出迭代 --}}
   {{#each todos}}
-  <li>
-    <input type="checkbox" name="isDone" {{#if this.isDone}} checked {{/if}} disabled>
-    {{this.name}}
-    {{!-- {{this._id}}:_id未在model中被定義，但若在robo 3T(資料庫)裡可以看見。在Mongoose裡使用_id來表示每筆資料的唯一識別碼。 --}}
-    <a href="./todos/{{this._id}}">detail</a>
-    {{!-- 設定編輯入口 --}}
-    <a href="./todos/{{this._id}}/edit">edit</a>
-    {{!-- 設定刪除入口。新增form，因為要用post --}}
-    <form action="./todos/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
-      <button type="submit">delete</button>
-    </form>
+  <li class="list-group-item">
+    <div class="row">
+      <div class="col-auto me-auto ">
+        <input input style="vertical-align: middle;" type="checkbox" name="isDone" {{#if this.isDone}} checked {{/if}}
+          disabled>
+        <h4 style="display:inline;vertical-align:middle;">{{this.name}}</h4>
+      </div>
+      <div class="col-auto">
+        {{!-- {{this._id}}:_id未在model中被定義，但若在robo 3T(資料庫)裡可以看見。在Mongoose裡使用_id來表示每筆資料的唯一識別碼。 --}}
+        <a class="btn btn-secondary" href="./todos/{{this._id}}">detail</a>
+        {{!-- 設定編輯入口 --}}
+        <a class="btn btn-success" href="./todos/{{this._id}}/edit">edit</a>
+        {{!-- 設定刪除入口。新增form，因為要用post --}}
+        <form action="./todos/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
+          <button class="btn btn-danger" type="submit">delete</button>
+        </form>
+      </div>
+    </div>
   </li>
   {{/each}}
 </ul>
