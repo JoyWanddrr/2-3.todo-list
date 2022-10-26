@@ -1,9 +1,11 @@
 {{!-- 使用者新增資料的畫面(樣板) --}}
 
 {{!-- action:表單送出要送去哪。method="POST":是「用 POST 方法，把資料送給 /todos 位置」。這代表等下我們需要再新增一條 POST /todos 路由來接住這筆表單資料。 --}}
-<form action="/todos" method="POST">
+<form action="/todos" method="POST" style="display:inline;">
   {{!-- <input> 標籤的 name 屬性，這個 name 屬性很重要，它是 HTTP 傳輸時的資料名稱。這些資料會被放在 HTTP 的 request body 裡，進到 Express.js 以後打包成
   req.body物件，就能在後續流程中使用： --}}
-  <input type="text" placeholder="name" name="name">
-  <button type="submit">Create</button>
+  <div class="input-group">
+    <input class="form-control" type="text" placeholder="name" name="name">
+    <button class="btn btn-success" type="submit">Create</button>
+  </div>
 </form>
