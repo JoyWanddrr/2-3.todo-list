@@ -34,6 +34,10 @@ const bodyParser = require('body-parser')
 //   console.log('mongodb connected!')
 // })
 
+// // 加入這段 code, 僅在非正式環境時, 使用 dotenv
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').config()
+// }
 
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
@@ -45,7 +49,7 @@ require('./config/mongoose')
 // 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
 const methodOverride = require('method-override')
 
-app.use(routes)
+
 // 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉。
 app.use(methodOverride('_method'))
 

@@ -26,5 +26,8 @@
     "url": "https://github.com/JoyWanddrr/2-3.todo-list/issues"
   },
   "homepage": "https://github.com/JoyWanddrr/2-3.todo-list#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "dotenv": "^16.0.3"
+  }
 }
