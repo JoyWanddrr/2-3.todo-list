@@ -1,14 +1,28 @@
 {{!-- todo的detail --}}
 
 {{!-- disable表示狀態不可更改 --}}
-<input type="checkbox" name="isDone" {{#if todo.isDone}} checked {{/if}} disabled>
+{{!-- <input type="checkbox" name="isDone" {{#if todo.isDone}} checked {{/if}} disabled> --}}
 {{!-- 只需要文字，不需要html，所以{}X2 --}}
-<p>{{todo.name}}</p>
+{{!-- <p>{{todo.name}}</p> --}}
 {{!-- 設定編輯入口 --}}
-<a href="/todos/{{todo._id}}/edit">edit</a>
+{{!-- <a href="/todos/{{todo._id}}/edit">edit</a> --}}
 {{!-- 導回根目錄 --}}
-<a href="/">back</a>
+{{!-- <a href="/">back</a> --}}
 {{!-- 設定刪除入口--}}
 {{!-- 載入method-override後，用戶端回傳的post可以經由override轉成delete method。post就會改成delete。開啟瀏覽器F12的開發者工具，network裡可以看見是否經過新設定的路由 --}}
-<form action="/todos/{{ todo._id }}?_method=DELETE" method="POST" style="display: inline;">
-  <button type="submit">delete</button>
+{{!-- <form action="/todos/{{ todo._id }}?_method=DELETE" method="POST" style="display: inline;">
+  <button type="submit">delete</button> --}}
+
+  {{!-- 增加bootstrap效果 --}}
+  <form action="/todos/{{todo._id}}?method=DELETE" method="POST" style="display:inline;">
+    <div class="input-group">
+      <div class="input-group-text">
+        {{!-- 因為我們的 checkbox 是在 todo 名稱的前面（左邊），所以我們會再加上 form-check-input mt-0 的 class。 --}}
+        <input type="checkbox" class="form-check-input mt-0" name="isDone" {{#if todo.isDone}} checked{{/if}} disabled>
+      </div>
+      <input type="text" class="form-control" type="text" placeholder="name" name="name" value="{{todo.name}} "
+        disabled>
+      <a href="/todos/{{todo._id}}/edit" class="btn btn-success">edit</a>
+      <button class="btn btn-danger" type="submit">delete</button>
+    </div>
+  </form>
