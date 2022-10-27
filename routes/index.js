@@ -10,13 +10,15 @@ const express = require('express')
 const router = express.Router()
 // 引入 todos 模組程式碼
 const todos = require('./modules/todos')
-
+const users = require('./modules/users')
 // 引入home模組程式碼
 const home = require('./modules/home')
 // 將網址結構符合 / 字串的 request 導向 home 模組(如果request路徑是'/',就執行home的程式碼) 。此為首頁路由。最後再放入app.js使用。
 router.use('/', home)
 // 將todos路由彙整，再由總路由匯出
 router.use('/todos', todos)
+
+router.use('/users', users)
 
 
 
