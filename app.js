@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const session = require('express-session')
 // 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。將mongoose分開管理。
 // const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
@@ -49,6 +50,11 @@ require('./config/mongoose')
 // 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
 const methodOverride = require('method-override')
 
+app.use(session({
+  secret: 'ThisIsMySecret',
+  resave: false,
+  saveUninitialized: true
+}))
 
 // 設定每一筆請求都會透過 methodOverride 進行前置處理。其中的參數_method，是method-override 幫我們設計的路由覆蓋機制，只要我們在網址上使用 query string (也就是 ?) 帶入這組指定字串，就可以把路由覆蓋掉。
 app.use(methodOverride('_method'))
