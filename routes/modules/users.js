@@ -3,6 +3,8 @@ const express = require('express')
 const router = express.Router()
 // 引入user model
 const User = require('./../../models/user')
+// 引用passport套件
+const passport = require('passport')
 
 router.get('/login', (req, res) => {
   res.render('login')
@@ -12,9 +14,13 @@ router.get('/register', (req, res) => {
   res.render('register')
 })
 
-router.post('/login', (req, res) => {
-
-})
+// 載入登入驗證 ，用 Passport 提供的 authenticate 方法執行認證
+router.post('/login', passport.authenticate('local', {
+  // 驗證成功，導向主頁
+  successRedirect: '/',
+  // 驗證失敗，導向登入頁面
+  failureRedirect: '/users/login'
+}))
 
 // 註冊資料送出
 router.post('/register', (req, res) => {

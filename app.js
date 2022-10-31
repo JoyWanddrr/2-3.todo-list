@@ -40,6 +40,9 @@ const bodyParser = require('body-parser')
 //   require('dotenv').config()
 // }
 
+// 載入passport設定檔，要寫在 express-session 以後
+const usePassport = require('./config/passport')
+
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
 // 將 request 導入路由器
@@ -69,6 +72,10 @@ app.set('view engine', 'hbs')
 // urlencoded:使用bodyParser解析url
 app.use(bodyParser.urlencoded({ extended: true }))
 // 使用總路由匯出。定義到home之下，再到index彙整，再回到app.js使用。
+
+// 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
+usePassport(app)
+
 app.use(routes)
 // app.get('/', (req, res) => {
 //   // 使用find，在未寫入條件之下，會取出全部的資料
