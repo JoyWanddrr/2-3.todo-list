@@ -77,6 +77,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
 usePassport(app)
 
+// 加入一組middleware，放入本地變數(res.locals)。res.locals裡的資料，所有view都可以存取。
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated
+  res.locals.user = req.user
+  next()
+})
+
 app.use(routes)
 // app.get('/', (req, res) => {
 //   // 使用find，在未寫入條件之下，會取出全部的資料
