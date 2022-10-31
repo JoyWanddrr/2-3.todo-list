@@ -53,6 +53,7 @@ require('./config/mongoose')
 // 注意:確定相對位置，引用的套件清單習慣放在文件最上方，而用 app.use 設定的工具要放在最靠近路由清單的上方，因為有用到 app 變數，所以當然一定要放在 const app = express() 之後：
 const methodOverride = require('method-override')
 
+
 app.use(session({
   secret: 'ThisIsMySecret',
   resave: false,
