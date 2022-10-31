@@ -56,5 +56,13 @@ router.post('/register', (req, res) => {
     .catch(err => console.log(err))
 })
 
+// 使用者登出
+router.get('/logout', (req, res) => {
+  // req.logout() 是 Passport.js 提供的函式，會幫你清除 session。
+  req.logout()
+  // 登出之後，我們就把使用者帶回登入頁面。
+  res.redirect('/users/login')
+})
+
 
 module.exports = router
