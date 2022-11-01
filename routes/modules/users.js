@@ -5,6 +5,8 @@ const router = express.Router()
 const User = require('./../../models/user')
 // 引用passport套件
 const passport = require('passport')
+// 引入bcrypt，雜湊密碼做準備，出現在註冊以及登入時會使用。
+const bcrypt = require('bcryptjs')
 
 router.get('/login', (req, res) => {
   res.render('login')
@@ -53,23 +55,37 @@ router.post('/register', (req, res) => {
         // 重新輸入的資料留存，需要把input的資料，傳到html留著(記得在相關頁面呼叫value='')
         return res.render('register', { errors, name, email, password })
       }
-      // 呼叫User物件，直接新增資料
-      return User.create({
-        name, email, password
-      })
+
+      // 雜湊密碼會在真正create前就需要加密。需要注意，登入頁面會出現問題是因為這裡已經把密碼給加密，所以還要去改完登入才能正常使用。
+      return bcrypt
+        // 產生「鹽」，並設定複雜度係數為 10
+        .genSalt(10)
+        // 為使用者密碼「加鹽」，產生雜湊值
+        .then(salt => bcrypt.hash(password, salt))
+        // 把加好的hash提出，再放入create進入資料庫
+        .then(hash => User.create({
+          name,
+          email,
+          passport: hash // 用雜湊值取代原本的使用者密碼
+        }))
         .then(() => res.redirect('/'))
         .catch(err => console.log(err))
-      // // 寫法二
-      // // 從User產生一個實例，再將實例存進資料庫
-      // const newUser = new User({
+      // // 呼叫User物件，直接新增資料，加密後被取代
+      // return User.create({
       //   name, email, password
       // })
-      // newUser.save()
       //   .then(() => res.redirect('/'))
       //   .catch(err => console.log(err))
+      // // // 寫法二
+      // // // 從User產生一個實例，再將實例存進資料庫
+      // // const newUser = new User({
+      // //   name, email, password
+      // // })
+      // // newUser.save()
+      // //   .then(() => res.redirect('/'))
+      // //   .catch(err => console.log(err))
 
     })
-    .catch(err => console.log(err))
 })
 
 // 使用者登出
