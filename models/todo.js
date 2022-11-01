@@ -18,6 +18,14 @@ const todoSchema = new Schema({
     type: Boolean,
     // 預設完成狀態為 false
     default: false,
+  },
+  // 建立與User Collection的關聯。在輸入每一筆todo時，夾帶userId，已辨別User使用者。再去修改相關router。
+  userId: {
+    type: Schema.Types.ObjectId,
+    //表示與User model關聯
+    ref: 'User',
+    index: true,
+    require: true
   }
 })
 

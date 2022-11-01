@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose')
 // mongoose.connect(process.env.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
-mongoose.connect("mongodb+srv://Alpha:camp@cluster0.j297u5e.mongodb.net/todo-list?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect("mongodb+srv://Alpha:camp@cluster0.j297u5e.mongodb.net/todo-list?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true })
 const db = mongoose.connection
 // 連線異常。在這裡用 on 註冊error 監聽事件有沒有發生，語法的意思是「只要有觸發 error 就印出 error 訊息」。
 db.on('error', () => {

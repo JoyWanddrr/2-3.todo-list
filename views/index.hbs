@@ -12,11 +12,11 @@
       </div>
       <div class="col-auto">
         {{!-- {{this._id}}:_id未在model中被定義，但若在robo 3T(資料庫)裡可以看見。在Mongoose裡使用_id來表示每筆資料的唯一識別碼。 --}}
-        <a class="btn btn-secondary" href="./todos/{{this._id}}">detail</a>
+        <a class="btn btn-secondary" href="/todos/{{this._id}}">detail</a>
         {{!-- 設定編輯入口 --}}
-        <a class="btn btn-success" href="./todos/{{this._id}}/edit">edit</a>
+        <a class="btn btn-success" href="/todos/{{this._id}}/edit">edit</a>
         {{!-- 設定刪除入口。新增form，因為要用post --}}
-        <form action="./todos/{{ this._id }}?_method=DELETE" method="POST" style="display: inline;">
+        <form action="/todos/{{this._id}}?_method=DELETE" method="POST" style="display: inline;">
           <button class="btn btn-danger" type="submit">delete</button>
         </form>
       </div>
