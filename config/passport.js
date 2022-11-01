@@ -6,6 +6,7 @@ const passport = require('passport')
 const user = require('../models/user')
 const LocalStrategy = require('passport-local').Strategy
 const User = require('./../models/user')
+const bcrypt = require('bcryptjs')
 
 // 直接輸出函式，使用app參數，之後在app.js載入app參數
 module.exports = app => {
@@ -30,11 +31,18 @@ module.exports = app => {
           return done(null, false, req.flash('warning_msg', 'That email is not registered!'))
           //  { message: 'That email is not registered!' })
         }
-        if (user.password !== password) {
-          return done(null, false, req.flash('warning_msg', 'Email or Passport is incorrect.'))
-        }
-        // 登入成功，回傳user
-        return done(null, user)
+        // 因為密碼使用bcrypt，所以這裡需要用bcrypt做解析比較。前面的password是輸入的password，後面的是find出來的password。
+        // 注意，在密碼加密完之後，之前所創建的帳號密碼(明碼)，就無法使用了。
+        return bcrypt.compare(password, user.password)
+          // isMatch是bcrypt回傳的結果
+          .then(isMatch => {
+            // 因為下面是false，表示上面也是false，所以要非true
+            if (!isMatch) {
+              return done(null, false, req.flash('warning_msg', 'Email or Passport is incorrect.'))
+            }
+            // 登入成功，回傳user
+            return done(null, user)
+          })
       })
       //抓取錯誤
       .catch(err => done(err, false))
