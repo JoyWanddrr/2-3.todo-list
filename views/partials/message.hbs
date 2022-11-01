@@ -1,0 +1,32 @@
+{{!-- 製作錯誤提示 --}}
+
+{{!-- 註冊錯誤訊息的提示 --}}
+{{#if errors}}
+{{!-- 使用迴圈將裡面的錯誤訊息帶出 --}}
+{{#each errors}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{ this.message }}
+  </button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+  </button>
+</div>
+{{/each}}
+{{/if}}
+
+{{!-- 成功的提示 --}}
+{{#if success_msg}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{{success_msg}}}
+  </button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+  </button>
+</div>
+{{/if}}
+
+{{!-- 錯誤的提示 ，在使用者驗證那邊寫入(auth.js)，未經過驗證不能使用功能。--}}
+{{!-- warning_msg=res.locals.warning_msg --}}
+{{#if warning_msg}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  {{warning_msg}}
+  </button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+  </button>
+</div>
+{{/if}}

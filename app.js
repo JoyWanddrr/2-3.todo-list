@@ -40,8 +40,11 @@ const bodyParser = require('body-parser')
 //   require('dotenv').config()
 // }
 
-// 載入passport設定檔，要寫在 express-session 以後
+// 載入passport設定檔(使用者認證套件)，要寫在 express-session 以後
 const usePassport = require('./config/passport')
+
+// 載入connect-flash，用以顯示訊息提示
+const flash = require('connect-flash')
 
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
@@ -77,10 +80,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // 呼叫 Passport 函式並傳入 app，這條要寫在路由之前
 usePassport(app)
 
+app.use(flash())// 掛載套件
 // 加入一組middleware，放入本地變數(res.locals)。res.locals裡的資料，所有view都可以存取。
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated
   res.locals.user = req.user
+  // 新增要傳入locals儲存的錯誤訊息提示
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 
