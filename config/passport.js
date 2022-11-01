@@ -17,17 +17,21 @@ module.exports = app => {
   // 設定本地登入策略
   // usernameField:'email'-->更改預設驗證項目為email
   // (email,passport,done)--->驗證email,password。done為控制成功/失敗的流程。
-  passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+  //  passReqToCallback:The verify callback can be supplied with the request object by setting the passReqToCallback option to true, and changing callback arguments accordingly.
+  // callback中，放入req==>(req,email,password,done)
+  passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, (req, email, password, done) => {
     // 需引用user才能比對email
     User.findOne({ email })
       .then(user => {
         // 比對user如果不同
         if (!user) {
           // 登入失敗，回傳訊息
-          return done(null, false, { message: 'That email is not registered!' })
+          // 使用app.js裡已設定好的warning_msg
+          return done(null, false, req.flash('warning_msg', 'That email is not registered!'))
+          //  { message: 'That email is not registered!' })
         }
         if (user.password !== password) {
-          return done(null, false, { message: 'Email or Passport is not correct.' })
+          return done(null, false, req.flash('warning_msg', 'Email or Passport is incorrect.'))
         }
         // 登入成功，回傳user
         return done(null, user)
