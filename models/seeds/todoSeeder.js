@@ -27,11 +27,59 @@
 
 // 重構mongoose
 
+// const Todo = require('../todo')
+// const db = require('../../config/mongoose')
+// db.once('open', () => {
+//   for (let i = 0; i < 10; i++) {
+//     Todo.create({ name: 'name-' + i })
+//   }
+//   console.log('done')
+// })
+
+// 重構種子資料，建立範例使用者
+
+// 載入密碼
+const bcrypt = require('bcryptjs')
+
+// 需要載入dotenv，因為所有變數已經使用.env取代
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+// 載入todo，user的schema用以新增資料進入資料庫
 const Todo = require('../todo')
+const User = require('../user')
+
 const db = require('../../config/mongoose')
+
+// 建立範例使用者資訊
+const SEED_USER = {
+  name: 'root',
+  email: 'root@example.com',
+  password: '12345678'
+}
+
+// 當資料庫開啟時
 db.once('open', () => {
-  for (let i = 0; i < 10; i++) {
-    Todo.create({ name: 'name-' + i })
-  }
-  console.log('done')
+  // 將密碼改成暗碼
+  bcrypt
+    .genSalt(10)
+    .then(salt => bcrypt.hash(SEED_USER.password, salt))
+    .then(hash => User.create({
+      name: SEED_USER.name,
+      email: SEED_USER.email,
+      password: hash
+    }))
+    // 創建範例todo list，掛載在範例使用者名下
+    // create會回傳user，所以可以抓取user的資訊(包括session ID)
+    .then(user => {
+      const userId = user._id
+      // 注意，使用for 迴圈會使資料尚未跑完就跳到下一個，所以改用promise
+      return Promise.all(Array.from({ length: 10 }, (_, i) =>
+        Todo.create({ name: `name-${i}`, userId })))
+    })
+    .then(() => {
+      console.log('done')
+      process.exit()
+    })
 })
+
