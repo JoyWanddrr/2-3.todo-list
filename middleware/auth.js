@@ -7,9 +7,10 @@ module.exports = {
     if (req.isAuthenticated()) {
       return next()
     }
-    // 增加錯誤提示。前面放app.js裡flash設定的參數(req.flash('warning_msg'))，後面放要輸入的訊息。
+    // 增加錯誤提示。前面放app.js裡flash設定的參數(req.flash('warning_msg'))，後面放要輸入的訊息。加了FB的第三方登入後失去提示。
     req.flash('warning_msg', '請先登入才能使用！')
     // 反之，導回登入頁面
     res.redirect('/users/login')
+
   }
 }

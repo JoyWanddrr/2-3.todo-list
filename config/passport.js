@@ -7,6 +7,7 @@ const user = require('../models/user')
 const LocalStrategy = require('passport-local').Strategy
 const User = require('./../models/user')
 const bcrypt = require('bcryptjs')
+const FacebookStrategy = require('passport-facebook').Strategy
 
 // 直接輸出函式，使用app參數，之後在app.js載入app參數
 module.exports = app => {
@@ -47,6 +48,36 @@ module.exports = app => {
       //抓取錯誤
       .catch(err => done(err, false))
   }))
+
+  // 第三方登入策略(FB)
+  passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+    callbackURL: process.env.FACEBOOK_CALLBACK,
+    profileFields: ['email', 'displayName'],
+  }, (accessToken, refreshToken, profile, cb) => {
+    // 使用profile(FB)裡的json物件(顯示登入者的基本資訊)，完成登入驗證
+    const { name, email } = profile._json
+    User.findOne({ email })
+      .then(user => {
+        // 如果在資料庫裡有找到user，則回傳user資訊
+        if (user) return done(null, user)
+        // 為新建的user製造隨機密碼
+        const randomPassword = Math.random.toString(36).slice(-8)
+        // 反之，則新建資料，使用bcrypt加密
+        bcrypt
+          .genSalt(10)
+          .then(salt => bcrypt.hash(randomPassword, salt))
+          // hash為加密過的密碼
+          .then(hash => User.create({
+            name, email, password: hash
+          }))
+          .then(user => done(null, user))
+          .catch(err => done(null, false))
+      })
+  }
+  ))
+
 
 
   // 設定serialize/deserialize

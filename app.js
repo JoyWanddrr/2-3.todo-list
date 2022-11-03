@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+
+
 const session = require('express-session')
 // 使用MongoDB資料庫，所對應的，所以需要載入 mongoose。將mongoose分開管理。
 // const mongoose = require('mongoose')
@@ -46,6 +48,15 @@ const usePassport = require('./config/passport')
 // 載入connect-flash，用以顯示訊息提示
 const flash = require('connect-flash')
 
+
+// 使用dotenv套件加載環境變數，要記得安裝dotenv。
+//NODE_ENV為node.js通用的值，會讀取.env。在production mode中，NODE_ENV會轉成production，就不會讀取.env。 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
+// 注意順序，要在process.env載入之後
+const PORT = process.env.PORT
 // 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案。
 const routes = require('./routes')
 // 將 request 導入路由器
@@ -58,7 +69,7 @@ const methodOverride = require('method-override')
 
 
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
@@ -197,6 +208,6 @@ app.use(routes)
 
 // })
 
-app.listen(3000, () => {
-  console.log('now is running port 3000!')
+app.listen(PORT, () => {
+  console.log(`now is running port ${PORT}!`)
 })
