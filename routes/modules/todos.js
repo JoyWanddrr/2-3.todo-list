@@ -2,7 +2,8 @@
 
 const express = require('express')
 const router = express.Router()
-const Todo = require('../../models/todo')
+const db = require('../../models')
+const Todo = db.Todo
 
 // 路徑重複的todo可以放在外層(index.js)，所以這裡可以拿掉
 
@@ -26,7 +27,7 @@ router.get('/:id', (req, res) => {
   const _id = req.params.id
   // 這裡要改成findOne，才能串接多個條件。id:先找一樣id的todo，userId:確保這筆todo屬於目前的登入者。
   // return Todo.findById(id)
-  return Todo.findOne({ _id, userId })
+  return Todo.findOne({ where: { _id, userId } })
     .lean()
     .then(todo => res.render('detail', { todo }))
     .catch(error => console.log(error))
@@ -36,7 +37,7 @@ router.get('/:id', (req, res) => {
 router.get('/:id/edit', (req, res) => {
   const userId = req.user._id
   const _id = req.params.id
-  return Todo.findOne({ _id, userId })
+  return Todo.findOne({ where: { _id, userId } })
     .lean()
     .then(todo => res.render('edit', { todo }))
     .catch(error => console.log(error))
@@ -47,7 +48,7 @@ router.put('/:id', (req, res) => {
   const userId = req.user._id
   const _id = req.params.id
   const { name, isDone } = req.body
-  return Todo.findOne({ _id, userId })
+  return Todo.findOne({ where: { _id, userId } })
     .then(todo => {
       todo.name = name
       todo.isDone = isDone === 'on'
@@ -60,7 +61,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const userId = req.user._id
   const _id = req.params.id
-  return Todo.findOne({ _id, userId })
+  return Todo.findOne({ where: { _id, userId } })
     .then(todo => todo.remove())
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))

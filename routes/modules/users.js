@@ -2,7 +2,8 @@
 const express = require('express')
 const router = express.Router()
 // 引入user model
-const User = require('./../../models/user')
+const db = require('../../models')
+const User = db.User
 // 引用passport套件
 const passport = require('passport')
 // 引入bcrypt，雜湊密碼做準備，出現在註冊以及登入時會使用。
@@ -47,7 +48,7 @@ router.post('/register', (req, res) => {
   }
 
   // 使用email搜尋是否註冊過。因為email:email，是一樣的，所以只需要寫email
-  User.findOne({ email })
+  User.findOne({ where: { email } })
     .then((user) => {
       // 若有找到，則重新輸入資料(回到register)
       if (user) {
@@ -70,21 +71,6 @@ router.post('/register', (req, res) => {
         }))
         .then(() => res.redirect('/'))
         .catch(err => console.log(err))
-      // // 呼叫User物件，直接新增資料，加密後被取代
-      // return User.create({
-      //   name, email, password
-      // })
-      //   .then(() => res.redirect('/'))
-      //   .catch(err => console.log(err))
-      // // // 寫法二
-      // // // 從User產生一個實例，再將實例存進資料庫
-      // // const newUser = new User({
-      // //   name, email, password
-      // // })
-      // // newUser.save()
-      // //   .then(() => res.redirect('/'))
-      // //   .catch(err => console.log(err))
-
     })
 })
 
