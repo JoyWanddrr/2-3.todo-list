@@ -14,7 +14,7 @@
   <button type="submit">delete</button> --}}
 
   {{!-- 增加bootstrap效果 --}}
-  <form action="/todos/{{todo._id}}?_method=DELETE" method="POST" style="display:inline;">
+  <form action="/todos/{{todo.id}}?_method=DELETE" method="POST" style="display:inline;">
     <div class="input-group">
       <div class="input-group-text">
         {{!-- 因為我們的 checkbox 是在 todo 名稱的前面（左邊），所以我們會再加上 form-check-input mt-0 的 class。 --}}
@@ -22,7 +22,7 @@
       </div>
       <input type="text" class="form-control" type="text" placeholder="name" name="name" value="{{todo.name}} "
         disabled>
-      <a href="/todos/{{todo._id}}/edit" class="btn btn-success">edit</a>
+      <a href="/todos/{{todo.id}}/edit" class="btn btn-success">edit</a>
       <button class="btn btn-danger" type="submit">delete</button>
     </div>
   </form>

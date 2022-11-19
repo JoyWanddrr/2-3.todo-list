@@ -4,7 +4,7 @@ const sequelize = require("sequelize");
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn(`Todos`, `UserId`, {
+    return queryInterface.addColumn('Todos', 'UserId', {
       type: sequelize.INTEGER,
       allowNull: false,
       references: {
@@ -15,6 +15,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn(`Todos`, `UserId`)
+    return queryInterface.removeColumn('Todos', 'UserId')
   }
 };

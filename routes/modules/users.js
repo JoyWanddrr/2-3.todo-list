@@ -1,13 +1,14 @@
 // 新增login路由，並最後再總路由裡載出
 const express = require('express')
 const router = express.Router()
-// 引入user model
-const db = require('../../models')
-const User = db.User
 // 引用passport套件
 const passport = require('passport')
 // 引入bcrypt，雜湊密碼做準備，出現在註冊以及登入時會使用。
 const bcrypt = require('bcryptjs')
+
+// 引入user model
+const db = require('../../models')
+const User = db.User
 
 router.get('/login', (req, res) => {
   res.render('login')

@@ -1,11 +1,11 @@
 // 設定登入驗證
 
+const db = require('../models')
+const User = db.User
 
 // 引入passport，以及local驗證的strategy
 const passport = require('passport')
-const user = require('../models/user')
 const LocalStrategy = require('passport-local').Strategy
-const User = require('./../models/user')
 const bcrypt = require('bcryptjs')
 const FacebookStrategy = require('passport-facebook').Strategy
 
