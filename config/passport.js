@@ -23,7 +23,7 @@ module.exports = app => {
   // callback中，放入req==>(req,email,password,done)
   passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, (req, email, password, done) => {
     // 需引用user才能比對email
-    User.findOne({ email })
+    User.findOne({ where: { email } })
       .then(user => {
         // 比對user如果不同
         if (!user) {
@@ -58,7 +58,7 @@ module.exports = app => {
   }, (accessToken, refreshToken, profile, cb) => {
     // 使用profile(FB)裡的json物件(顯示登入者的基本資訊)，完成登入驗證
     const { name, email } = profile._json
-    User.findOne({ email })
+    User.findOne({ where: { email } })
       .then(user => {
         // 如果在資料庫裡有找到user，則回傳user資訊
         if (user) return done(null, user)
@@ -87,10 +87,12 @@ module.exports = app => {
   })
   // 由於有資料庫操作，依照 Promise 風格用 .then().catch() 來控制流程
   passport.deserializeUser((id, done) => {
-    User.findById(id)
+    User.findByPk(id)
       // 從資料庫拿出來的物件，很可能會傳進前端樣板，因此遵從 Handlebars 的規格，先用 .lean() 把資料庫物件轉換成 JavaScript 原生物件。
-      .lean()
-      .then(user => done(null, user))
+      .then(user => {
+        user = user.toJSON()
+        done(null, user)
+      })
       // 錯誤處理的地方，其實 Passport 看到第一個參數有 err 就不會處理後面的參數了，但我們放一個 null 在語義上明確表達 user 是空的
       .catch(err => done(err, null))
   })
